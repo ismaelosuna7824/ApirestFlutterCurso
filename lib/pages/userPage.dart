@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cursoapp/models/userModel.dart';
 import 'package:flutter/material.dart';
@@ -83,12 +84,17 @@ class _UserPageState extends State<UserPage> {
                                   id: iduser,
                                   lastname: lastNameController.value.text))
                               .then((value) {
-                            var resp = json.decode(value.body);
+                            // print(value);
+                            final resp = json.decode(value);
                             if (resp['status']) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   snackbar('user added successfully'));
                               Navigator.pushReplacementNamed(context, '/');
                             }
+                          }).catchError((onError) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackbar('${onError.message}'));
+                            Navigator.pushReplacementNamed(context, '/');
                           });
                         } else {
                           ApiUser.updateUser(User(
@@ -96,7 +102,7 @@ class _UserPageState extends State<UserPage> {
                                   id: iduser,
                                   lastname: lastNameController.value.text))
                               .then((value) {
-                            var resp = json.decode(value.body);
+                            var resp = json.decode(value);
                             if (resp['status']) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   snackbar('user updated successfully'));
@@ -156,7 +162,7 @@ showAlertDialog(BuildContext context, int idUser) {
       final data = {"id": idUser};
       //print(data);
       ApiUser.deleteUser(json.encode(data)).then((value) {
-        var resp = json.decode(value.body);
+        var resp = json.decode(value);
         if (resp['status']) {
           ScaffoldMessenger.of(context)
               .showSnackBar(snackbar('user deleted successfully'));

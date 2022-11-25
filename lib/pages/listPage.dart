@@ -15,11 +15,12 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   List<User> list = [];
+  bool _isLoading = true;
   _getUser() {
     ApiUser.getUser().then((response) {
-      setState(() {
-        list = response;
-      });
+      list = response;
+      _isLoading = false;
+      setState(() {});
     });
   }
 
@@ -48,7 +49,12 @@ class _ListPageState extends State<ListPage> {
         },
         child: const Icon(Icons.add),
       ),
-      body: ListWidget(list: list),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+              backgroundColor: Colors.blue,
+            ))
+          : ListWidget(list: list),
     );
   }
 }
